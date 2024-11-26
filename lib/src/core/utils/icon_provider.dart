@@ -1,6 +1,6 @@
 enum IconProvider {
   dialog(imageName: 'dialog.png'),
-  splash(imageName: 'splash.png'),
+  splash(imageName: 'splash.webp'),
   calc(imageName: 'calc.png'),
   back(imageName: 'back.png'),
   history(imageName: 'history.png'),
@@ -25,6 +25,7 @@ enum IconProvider {
   tether(imageName: 'tether.png'),
   home(imageName: 'home.png'),
   bitcoin(imageName: 'bitcoin.png'),
+  splashItem(imageName: 'splash_item.png'),
   unknown(imageName: '');
 
   const IconProvider({

@@ -15,8 +15,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -47,6 +46,41 @@ class _SplashScreenState extends State<SplashScreen>
             asset: IconProvider.splash.buildImageUrl(),
             width: double.infinity,
             fit: BoxFit.cover,
+          ),
+        ),
+        Positioned(
+          top: height * 0.168,
+          left: -(width * 0.041),
+          child: AppIcon(
+            asset: IconProvider.splashItem.buildImageUrl(),
+            width: width * 0.988,
+            fit: BoxFit.fitWidth,
+          ),
+        ),
+        Positioned(
+          bottom: height * 0.218,
+          left: width * 0.041,
+          child: const SizedBox(
+            width: 310,
+            child: Text(
+              'Quantum AI Tracker',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 64,
+                fontFamily: 'cygre-book',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: height * 0.0475,
+          width: width * 0.9,
+          child: LinearProgressIndicator(
+            minHeight: 19,
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFF3764F3),
+            backgroundColor: const Color(0xFF202020),
           ),
         ),
       ],

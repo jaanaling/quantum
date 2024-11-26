@@ -35,7 +35,6 @@ flutter:
      - assets/
      - assets/images/
      - assets/fonts/
-     - assets/json/
 
   fonts:
       - family: satoshi
@@ -49,4 +48,8 @@ flutter:
             weight: 600
           - asset: assets/fonts/cygre-medium.ttf
             weight: 500
+      - family: cygre-book
+        fonts:
+          - asset: assets/fonts/cygre-book.ttf
+            weight: 400
 
