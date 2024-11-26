@@ -34,10 +34,6 @@ class _RootNavigationScreenState extends State<RootNavigationScreen> {
                     IconProvider.splash.buildImageUrl(),
                   ),
                   fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.68),
-                    BlendMode.darken,
-                  ),
                 ),
               ),
             ),

@@ -17,6 +17,9 @@ enum RouteValue {
   history(
     path: '/home',
   ),
+  addAsset(
+    path: 'addAsset',
+  ),
 
   unknown(
     path: '',

@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:quantum/src/feature/balance/presentation/screens/add_asset.dart';
 import 'package:quantum/src/feature/balance/presentation/screens/balance_screen.dart';
 import 'package:quantum/src/feature/balance/presentation/screens/history_screen.dart';
 import 'package:quantum/src/feature/balance/presentation/screens/home_screen.dart';
 import 'package:quantum/src/feature/balance/presentation/screens/tips_screen.dart';
 import 'package:quantum/src/feature/calculator/presentation/screens/calculator_screen.dart';
 
+import '../src/feature/balance/models/asset.dart';
 import '../src/feature/splash/presentation/screens/splash_screen.dart';
 import 'root_navigation_screen.dart';
 import 'route_value.dart';
@@ -17,7 +19,6 @@ final _calcNavigatorKey = GlobalKey<NavigatorState>();
 final _portfolioNavigatorKey = GlobalKey<NavigatorState>();
 final _tipsNavigatorKey = GlobalKey<NavigatorState>();
 final _historyNavigatorKey = GlobalKey<NavigatorState>();
-
 
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -34,7 +35,7 @@ GoRouter buildGoRouter = GoRouter(
         );
       },
       branches: [
-          StatefulShellBranch(
+        StatefulShellBranch(
           navigatorKey: _homeNavigatorKey,
           routes: <RouteBase>[
             GoRoute(
@@ -43,7 +44,7 @@ GoRouter buildGoRouter = GoRouter(
             ),
           ],
         ),
-         StatefulShellBranch(
+        StatefulShellBranch(
           navigatorKey: _calcNavigatorKey,
           routes: <RouteBase>[
             GoRoute(
@@ -52,16 +53,26 @@ GoRouter buildGoRouter = GoRouter(
             ),
           ],
         ),
-         StatefulShellBranch(
+        StatefulShellBranch(
           navigatorKey: _portfolioNavigatorKey,
           routes: <RouteBase>[
             GoRoute(
-              path: RouteValue.portfolio.path,
-              builder: (context, state) => BalanceScreen(),
-            ),
+                path: RouteValue.portfolio.path,
+                builder: (context, state) => BalanceScreen(),
+                routes: [
+                  GoRoute(
+                    path: RouteValue.addAsset.path,
+                    builder: (context, state) {
+                      final asset = state.extra as Asset?;
+                      return AddAsset(
+                        asset: asset,
+                      );
+                    },
+                  )
+                ]),
           ],
         ),
-         StatefulShellBranch(
+        StatefulShellBranch(
           navigatorKey: _tipsNavigatorKey,
           routes: <RouteBase>[
             GoRoute(
@@ -70,7 +81,7 @@ GoRouter buildGoRouter = GoRouter(
             ),
           ],
         ),
-         StatefulShellBranch(
+        StatefulShellBranch(
           navigatorKey: _historyNavigatorKey,
           routes: <RouteBase>[
             GoRoute(
