@@ -12,31 +12,30 @@ class AppRoot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BalanceBloc, BalanceState>(
-      builder: (context, state) {
-        return CupertinoApp.router(
-          theme: const CupertinoThemeData(
-            brightness: Brightness.light,
-            primaryColor: Color(0xFF1895FB),
-            textTheme: CupertinoTextThemeData(
-              textStyle: TextStyle(
-                fontFamily: 'cygre',
-                fontWeight: FontWeight.w500,
-                fontSize: 32,
-                color: Colors.white,
-                 height: 0,
-              ),            
+    return BlocProvider(
+      create: (context) => BalanceBloc()..add(LoadBalance()),
+      child: CupertinoApp.router(
+        theme: const CupertinoThemeData(
+          brightness: Brightness.light,
+          primaryColor: Color(0xFF1895FB),
+          textTheme: CupertinoTextThemeData(
+            textStyle: TextStyle(
+              fontFamily: 'cygre',
+              fontWeight: FontWeight.w500,
+              fontSize: 32,
+              color: Colors.white,
+              height: 0,
             ),
           ),
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          routerConfig: buildGoRouter,
-          debugShowCheckedModeBanner: false,
-        );
-      },
+        ),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        routerConfig: buildGoRouter,
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
