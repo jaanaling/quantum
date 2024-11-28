@@ -12,14 +12,30 @@ class InvestmentCalculation {
     required this.duration,
     this.isCompounded = false,
   });
+List<MonthlyGrowth> calculateMonthlyGrowth() {
+  final monthlyRate = annualRate / 100 / 12;
+  double amount = initialAmount;
+  List<MonthlyGrowth> growth = [];
 
-  double calculateFinalAmount() {
+  for (int month = 1; month <= duration; month++) {
     if (isCompounded) {
-      final rate = annualRate / 100;
-      return initialAmount * pow(1 + rate, duration);
+      // Сложные проценты
+      amount = initialAmount * pow(1 + monthlyRate, month);
     } else {
-      final simpleInterest = initialAmount * (annualRate / 100) * duration;
-      return initialAmount + simpleInterest;
+      // Простые проценты, рассчитываем месячное увеличение
+      double simpleGrowth = initialAmount + (initialAmount * monthlyRate * month);
+      amount = simpleGrowth;
     }
+    growth.add(MonthlyGrowth(month: month, amount: amount));
   }
+  return growth;
+}
+
+}
+
+class MonthlyGrowth {
+  final int month;
+  final double amount;
+
+  MonthlyGrowth({required this.month, required this.amount});
 }

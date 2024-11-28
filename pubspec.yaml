@@ -22,6 +22,11 @@ dependencies:
     sdk: flutter
   advertising_id: ^2.7.1
   syncfusion_flutter_charts: ^27.2.3
+  pdf: ^3.11.1
+  path_provider: ^2.1.5
+  syncfusion_flutter_pdf: ^27.2.4
+  printing: ^5.13.4
+
 
 
 dev_dependencies:

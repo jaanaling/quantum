@@ -16,7 +16,7 @@ class AppTextField extends StatelessWidget {
   const AppTextField(
       {super.key,
       required this.controller,
-      required this.placeholder,
+      this.placeholder,
       this.textInputType = TextInputType.text,
       this.width = 0.888,
       this.onChanged,
@@ -39,10 +39,22 @@ class AppTextField extends StatelessWidget {
               )),
         if (topText != null) Gap(10),
         SizedBox(
-          width: double.infinity,
+          width: width,
           child: CupertinoTextField(
-            prefix: prefix,
-            suffix: suffix,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+            prefix: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: prefix == null ? 0 : 12,
+                  vertical: prefix == null ? 0 : 13),
+              child: prefix,
+            ),
+            textAlignVertical: TextAlignVertical.center,
+            suffix: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: suffix == null ? 0 : 12,
+                  vertical: suffix == null ? 0 : 13),
+              child: suffix,
+            ),
             placeholder: placeholder,
             placeholderStyle: const TextStyle(
               color: Color(0xFF1E1E1E),
@@ -56,11 +68,10 @@ class AppTextField extends StatelessWidget {
             controller: controller,
             onChanged: onChanged,
             keyboardType: textInputType,
-            textAlignVertical: TextAlignVertical.center,
             style: const TextStyle(
+              fontSize: 31,
               color: Colors.white,
             ),
-            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.white.withOpacity(0.35),

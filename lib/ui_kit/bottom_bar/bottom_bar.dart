@@ -22,7 +22,7 @@ class _BottomBarState extends State<BottomBar> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: 43, horizontal: MediaQuery.of(context).size.width * 0.08),
+          vertical: 43, horizontal: MediaQuery.of(context).size.width * 0.02),
       child: DecoratedBox(
         decoration: BoxDecoration(
             color: Color(0xFF0C0B08),
@@ -63,7 +63,7 @@ class _BottomBarState extends State<BottomBar> {
                   context.go(RouteValue.tips.path);
                   _onItemTapped(3);
                 },
-              ),  
+              ),
               _buildIconButton(
                 index: 4,
                 iconUrl: IconProvider.history.buildImageUrl(),

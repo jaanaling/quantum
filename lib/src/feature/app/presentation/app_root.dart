@@ -24,7 +24,7 @@ class AppRoot extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontSize: 32,
               color: Colors.white,
-              height: 0,
+         
             ),
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +8,12 @@ import 'package:quantum/routes/route_value.dart';
 import 'package:quantum/src/core/utils/app_icon.dart';
 import 'package:quantum/src/feature/balance/bloc/balance_bloc.dart';
 import 'package:quantum/src/feature/balance/models/asset.dart';
+import 'package:quantum/ui_kit/chart.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 import '../../models/values.dart';
 
@@ -24,7 +31,7 @@ class BalanceScreen extends StatelessWidget {
               children: [
                 Gap(16),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.383,
+                  height: MediaQuery.of(context).size.height * 0.35,
                   child: state.balance.assets.isEmpty
                       ? Padding(
                           padding: const EdgeInsets.only(top: 50),
@@ -44,7 +51,7 @@ class BalanceScreen extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) =>
                               AssetItem(asset: state.balance.assets[index]),
                           separatorBuilder: (BuildContext context, int index) =>
-                              Gap(3),
+                              Gap(12),
                           itemCount: state.balance.assets.length),
                 ),
                 Gap(20),
@@ -82,6 +89,10 @@ class BalanceScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                Gap(20),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: AssetsChart()),
               ],
             ),
           );
@@ -106,7 +117,7 @@ class AssetItem extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF3700FF), Color(0xFF537BFF)],
+          colors: [Color(0xAA3700FF), Color(0xAA537BFF)],
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(19),
@@ -119,127 +130,158 @@ class AssetItem extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          const Gap(16),
-          Container(
-            width: 60,
-            height: 60,
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(39),
-              ),
-            ),
-            child: AppIcon(
-              asset: values[asset.type] ?? '',
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Row(
+          children: [
+            const Gap(16),
+            Container(
               width: 60,
               height: 60,
-            ),
-          ),
-          const Gap(10),
-          Row(
-            children: [
-              Column(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.43,
-                    child: Text(
-                      asset.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 21,
-                        fontFamily: 'cygre',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.43,
-                    child: Text(
-                      'count: ${asset.quantity}',
-                      style: const TextStyle(
-                        color: Color(0xFFC4C4C4),
-                        fontSize: 16,
-                        fontFamily: 'cygre',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                      ),
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
-                ],
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(39),
+                ),
               ),
-              const Spacer(),
-              Column(
+              child: AppIcon(
+                asset: values[asset.type] ?? '',
+                width: 60,
+                height: 60,
+              ),
+            ),
+            const Gap(10),
+            Expanded(
+              child: Row(
                 children: [
-                  Text(
-                    '\$ ${formatDouble(asset.currentValue)}',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 21,
-                      fontFamily: 'cygre',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (isNegative)
-                        Container(
-                          width: 16,
-                          height: 10,
-                          decoration: const ShapeDecoration(
-                            color: Color(0xFFD85353),
-                            shape: StarBorder.polygon(sides: 3),
-                          ),
-                        )
-                      else
-                        Container(
-                          width: 16,
-                          height: 10,
-                          decoration: const ShapeDecoration(
-                            color: Color(0xFF57F56F),
-                            shape: StarBorder.polygon(sides: 3),
-                          ),
-                        ),
-                      Text(
-                        '${asset.profitOrLossPercentage}%',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: isNegative
-                              ? const Color(0xFFD85353)
-                              : const Color(0xFF56F56E),
-                          fontSize: 16,
-                          fontFamily: 'cygre',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                asset.name,
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.23,
+                        child: Text(
+                          'count: ${asset.quantity}',
+                          style: const TextStyle(
+                            color: Color(0xFFC4C4C4),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const Gap(8),
+                      CupertinoButton(
+                        alignment: Alignment.topLeft,
+                        onPressed: () {
+                        context.read<BalanceBloc>().add(RemoveBalance( asset));
+                        },
+                        child: Icon(
+                          (CupertinoIcons.delete_solid),
+                          color: Color(0xFFF27373),
+                          size: 24,
+                        ),
+                        padding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      CupertinoButton(
+                        alignment: Alignment.topRight,
+                        onPressed: () {
+                          context.push(
+                              '${RouteValue.portfolio.path}/${RouteValue.addAsset.path}',
+                              extra: asset);
+                        },
+                        child: Icon(
+                          (CupertinoIcons.pencil_ellipsis_rectangle),
+                          color: Color(0xFFC5CEFF),
+                          size: 36,
+                        ),
+                        padding: EdgeInsets.zero,
+                      ),
                       Text(
-                        '${isNegative ? '-' : '+'} \$ ${asset.profitOrLoss}',
+                        '\$ ${formatDouble(asset.currentValue)}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Gap(8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (isNegative)
+                            Container(
+                              width: 16,
+                              height: 10,
+                              decoration: const ShapeDecoration(
+                                color: Color(0xFFD85353),
+                                shape:
+                                    StarBorder.polygon(sides: 3, rotation: 180),
+                              ),
+                            )
+                          else
+                            Container(
+                              width: 16,
+                              height: 10,
+                              decoration: const ShapeDecoration(
+                                color: Color(0xFF57F56F),
+                                shape: StarBorder.polygon(sides: 3),
+                              ),
+                            ),
+                          Text(
+                            '${asset.profitOrLossPercentage.toStringAsFixed(2)}%',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: isNegative
+                                  ? const Color(0xFFD85353)
+                                  : const Color(0xFF56F56E),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Gap(8),
+                      Text(
+                        '\$ ${asset.profitOrLoss}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: isNegative
                               ? const Color(0x7FD95353)
                               : const Color(0x7F56F56E),
                           fontSize: 16,
-                          fontFamily: 'cygre',
                           fontWeight: FontWeight.w600,
-                          height: 0,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              const Gap(10),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

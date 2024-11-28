@@ -48,15 +48,24 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
     Emitter<BalanceState> emit,
   ) async {
     try {
+      final oldAsset = (state as BalanceLoaded)
+          .balance
+          .assets
+          .firstWhere((element) => element.id == event.asset.id);
       await _repository.update(event.asset);
+
       final SharedPreferences pref = await SharedPreferences.getInstance();
       final history = pref
               .getStringList('history')
               ?.map((e) => History.fromMap(History.fromJson(e).toMap()))
               .toList() ??
           [];
-      history.add(
-          History(asset: event.asset, date: DateTime.now(), type: 'update'));
+      history.add(History(
+          asset: event.asset,
+          oldAsset: oldAsset,
+          balance: (state as BalanceLoaded).balance.totalValue,
+          date: DateTime.now(),
+          type: 'update'));
       pref.setStringList('history', history.map((e) => e.toJson()).toList());
 
       add(LoadBalance());
@@ -77,8 +86,11 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
               ?.map((e) => History.fromMap(History.fromJson(e).toMap()))
               .toList() ??
           [];
-      history
-          .add(History(asset: event.asset, date: DateTime.now(), type: 'add'));
+      history.add(History(
+          asset: event.asset,
+          balance: (state as BalanceLoaded).balance.totalValue,
+          date: DateTime.now(),
+          type: 'add'));
       pref.setStringList('history', history.map((e) => e.toJson()).toList());
 
       add(LoadBalance());
@@ -100,8 +112,11 @@ class BalanceBloc extends Bloc<BalanceEvent, BalanceState> {
               ?.map((e) => History.fromMap(History.fromJson(e).toMap()))
               .toList() ??
           [];
-      history
-          .add(History(asset: event.asset, date: DateTime.now(), type: 'delete'));
+      history.add(History(
+          asset: event.asset,
+          balance: (state as BalanceLoaded).balance.totalValue,
+          date: DateTime.now(),
+          type: 'delete'));
       pref.setStringList('history', history.map((e) => e.toJson()).toList());
       add(LoadBalance());
     } catch (e) {
