@@ -26,6 +26,7 @@ enum IconProvider {
   home(imageName: 'home.png'),
   bitcoin(imageName: 'bitcoin.png'),
   splashItem(imageName: 'splash_item.png'),
+  ipadDialog(imageName: 'ipad_dialog.png'),
   unknown(imageName: '');
 
   const IconProvider({

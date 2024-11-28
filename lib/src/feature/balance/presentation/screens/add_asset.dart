@@ -262,49 +262,7 @@ class _AddAssetState extends State<AddAsset> {
                         splashColor: Color(0xFF5C81F8),
                         borderRadius: BorderRadius.circular(29),
                         onTap: () {
-                          if (widget.asset != null) {
-                            context.read<BalanceBloc>().add(
-                                  UpdateBalance(
-                                    widget.asset!.copyWith(
-                                      name: nameController.text,
-                                      quantity: double.tryParse(
-                                            quantityController.text,
-                                          ) ??
-                                          1,
-                                      purchasePrice: double.tryParse(
-                                              priceController.text) ??
-                                          1,
-                                      currentPrice: double.tryParse(
-                                            exchangeController.text,
-                                          ) ??
-                                          1,
-                                    ),
-                                  ),
-                                );
-                          } else {
-                            context.read<BalanceBloc>().add(
-                                  SaveBalance(
-                                    Asset(
-                                      id: DateTime.now()
-                                          .microsecondsSinceEpoch
-                                          .toString(),
-                                      name: nameController.text,
-                                      type: values.keys.toList()[selectedIndex],
-                                      quantity: double.tryParse(
-                                            quantityController.text,
-                                          ) ??
-                                          1,
-                                      purchasePrice: priceController.text == ''
-                                          ? 0
-                                          : double.parse(priceController.text),
-                                      currentPrice: priceController.text == ''
-                                          ? 0
-                                          : double.parse(priceController.text),
-                                    ),
-                                  ),
-                                );
-                          }
-                          context.pop();
+                          _validateAndSubmit();
                         },
                         child: Ink(
                           width: 222,
@@ -342,4 +300,80 @@ class _AddAssetState extends State<AddAsset> {
       ),
     );
   }
+
+  void _validateAndSubmit() {
+    String errorMessage = '';
+
+    if (nameController.text.isEmpty) {
+      errorMessage = 'Asset name is required.';
+    } else if (quantityController.text.isEmpty ||
+        double.tryParse(quantityController.text) == null ||
+        double.parse(quantityController.text) <= 0) {
+      errorMessage = 'Enter a valid quantity greater than 0.';
+    } else if (priceController.text.isEmpty ||
+        double.tryParse(priceController.text) == null ||
+        double.parse(priceController.text) <= 0) {
+      errorMessage = 'Enter a valid purchase price greater than 0.';
+    } else if (widget.asset != null &&
+        (exchangeController.text.isEmpty ||
+            double.tryParse(exchangeController.text) == null ||
+            double.parse(exchangeController.text) <= 0)) {
+      errorMessage = 'Enter a valid current exchange price greater than 0.';
+    }
+
+    if (errorMessage.isNotEmpty) {
+      _showErrorDialog(errorMessage);
+      return;
+    }
+
+    // Если валидация прошла, сохранить или обновить данные
+    if (widget.asset != null) {
+      context.read<BalanceBloc>().add(
+        UpdateBalance(
+          widget.asset!.copyWith(
+            name: nameController.text,
+            quantity: double.parse(quantityController.text),
+            purchasePrice: double.parse(priceController.text),
+            currentPrice: double.parse(exchangeController.text),
+          ),
+        ),
+      );
+    } else {
+      context.read<BalanceBloc>().add(
+        SaveBalance(
+          Asset(
+            id: DateTime.now().microsecondsSinceEpoch.toString(),
+            name: nameController.text,
+            type: values.keys.toList()[selectedIndex],
+            quantity: double.parse(quantityController.text),
+            purchasePrice: double.parse(priceController.text),
+            currentPrice: double.parse(priceController.text),
+          ),
+        ),
+      );
+    }
+
+    context.pop();
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Validation Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

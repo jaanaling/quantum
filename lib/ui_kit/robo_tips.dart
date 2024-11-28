@@ -51,6 +51,8 @@ class _RoboTipsState extends State<RoboTips> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isIPad = MediaQuery.of(context).size.width >= 768;
+
     return Stack(
       children: [
         Padding(
@@ -67,24 +69,26 @@ class _RoboTipsState extends State<RoboTips> {
         Padding(
           padding: const EdgeInsets.only(left: 16, top: 16),
           child: Align(
-             alignment: Alignment.topLeft,
+            alignment: Alignment.topLeft,
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 45),
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 45),
               width: MediaQuery.of(context).size.width / 1.5,
               decoration: BoxDecoration(
                   color: Colors.transparent,
                   image: DecorationImage(
                     image: AssetImage(
-                      IconProvider.dialog.buildImageUrl(),
+                      isIPad
+                          ? IconProvider.ipadDialog.buildImageUrl()
+                          : IconProvider.dialog.buildImageUrl(),
                     ),
+                    filterQuality: FilterQuality.high,
                     fit: BoxFit.fitWidth,
                   )),
               child: Text(
                 advice,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 19,
-          
                 ),
                 textAlign: TextAlign.center,
               ),
