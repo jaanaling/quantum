@@ -17,6 +17,10 @@ dependencies:
   equatable: ^2.0.5
   shared_preferences: ^2.3.1
   cupertino_icons: ^1.0.8
+  core_logic:
+    git:
+      url: https://github.com/Vennylost/core_logic.git
+      ref: 0c0ffc39a6e10dd56b2cfe5a60478c2e2f4fa6c1
 
   flutter_localizations:
     sdk: flutter
