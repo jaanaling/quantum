@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:core_logic/core_logic.dart';
+import 'package:quantum/firebase_options.dart';
 import 'src/core/dependency_injection.dart';
 import 'src/feature/app/presentation/app_root.dart';
 import 'package:core_amplitude/core_amplitude.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
    runZonedGuarded(() async {
@@ -14,6 +16,10 @@ void main() async {
          _handleFlutterError(details);
       };
   WidgetsFlutterBinding.ensureInitialized();
+
+   await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
 
   setupDependencyInjection();
 
